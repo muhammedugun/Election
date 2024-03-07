@@ -1,3 +1,4 @@
+// Web sitesinin genel çalışma prensiplerini tanımlıyor. (Sitenin altyapısını hazırlıyor.)
 var express = require('express');
 var i18n = require('i18n');
 var path = require('path');

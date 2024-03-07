@@ -15,5 +15,9 @@
 	"Tx": "Tx",
 	"$": "$",
 	"From": "From",
-	"Coinbase Transactions": "Coinbase Transactions"
+	"Coinbase Transactions": "Coinbase Transactions",
+	"Block5": "Block5",
+	"Blo4ck": "Blo4ck",
+	"Blo4ck:": "Blo4ck:",
+	"Mine2": "Mine2"
 }

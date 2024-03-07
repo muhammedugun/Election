@@ -21,7 +21,7 @@ block content
         .form-group
           label.col-sm-2.control-label(for='block1chain1data') #{__('Data')}:
           .col-sm-10
-            textarea#block1chain1data.form-control(rows='10')
+            input#block1chain1data.form-control(type='text', value='')
 
         #state.form-group
           label.col-sm-2.control-label(for='block1chain1hash') #{__('Hash')}:
@@ -33,10 +33,11 @@ block content
             i.icon-spinner.icon-spin.icon-large
           .col-sm-10
             button#block1chain1mineButton.btn.btn-primary.ladda-button(data-style='expand-right')
-              span.ladda-label #{__('Mine')}
+              span.ladda-label #{__('Mine')} 
+
 
   script.
-    $(function() {
+    $(function() { 
       $('#block1chain1number').bind('input propertychange', function() { updateHash(1, 1); });
       $('#block1chain1nonce').bind('input propertychange', function() { updateHash(1, 1); });
       $('#block1chain1data').bind('input propertychange', function() { updateHash(1, 1); });

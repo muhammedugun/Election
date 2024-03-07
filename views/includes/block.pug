@@ -16,7 +16,7 @@
     .form-group
       label.col-sm-2.control-label(for='block'+block.block+'chain'+block.chain+'data') #{__('Data')}:
       .col-sm-10
-        textarea.form-control(id='block'+block.block+'chain'+block.chain+'data', rows='10')
+        input.form-control(id='block'+block.block+'chain'+block.chain+'data', type='text')
 
     #state.form-group
       label.col-sm-2.control-label(for='block'+block.block+'chain'+block.chain+'previous') #{__('Prev')}:
