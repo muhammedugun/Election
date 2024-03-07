@@ -1,8 +1,8 @@
 {
-  "name": "blockchain-demo",
-  "description": "A web-based demonstration of blockchain concepts.",
+  "name": "Election",
+  "description": "Seçim Projesi",
   "author": {
-    "name": "Anders Brownworth"
+    "name": "MFS ve MU"
   },
   "version": "0.0.1",
   "keywords": [
