@@ -14,7 +14,7 @@ Run the server:
 npm start
 ```
 
-Point a web browser at the demo: Mıhemed
+Point a web browser at the demo:
 
 ```
 http://localhost:3000
