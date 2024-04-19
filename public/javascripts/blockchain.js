@@ -1,3 +1,6 @@
+const Crypto = require('./lib/sha256');
+
+
 /////////////////////////
 // global variable setup
 /////////////////////////
@@ -33,14 +36,14 @@ else if (difficultyMinor <= 7) { maximumNonce *= 2;  } // 0111 require 1 more 0 
 // else don't bother increasing maximumNonce, it already started with 8x padding
 
 
-
 /////////////////////////
 // functions
 /////////////////////////
 function sha256(block, chain) {
   // calculate a SHA256 hash of the contents of the block
-  return CryptoJS.SHA256(getText(block, chain));
+  return CryptoJS.SHA256(getText(block, chain));  //getText metodu blockchain.pug dosyasında bulunan bir metottur.
 }
+
 
 function updateState(block, chain) {
   // set the well background red or green for this block
@@ -68,11 +71,12 @@ function updateChain(block, chain) {
   }
 }
 
+// Nonce ve ardından hash hesaplama işlemi yapılır
 function mine(block, chain, isChain) {
   for (var x = 0; x <= maximumNonce; x++) {
     $('#block'+block+'chain'+chain+'nonce').val(x);
     $('#block'+block+'chain'+chain+'hash').val(sha256(block, chain));
-    if ($('#block'+block+'chain'+chain+'hash').val().substr(0, patternLen) <= pattern) {
+    if ($('#block'+block+'chain'+chain+'hash').val().substr(0, patternLen) <= pattern) { //hash değerinin ilk 5 karakteri, 0000f değerinden küçük eşitse
       if (isChain) {
         updateChain(block, chain);
       }
@@ -83,3 +87,78 @@ function mine(block, chain, isChain) {
     }
   }
 }
+
+
+
+
+
+function getTextVote(block) {
+  return block.id + block.nonce + block.previous + block.tc + block.vote + block.data;
+}
+
+
+function sha256Vote(block) {
+  // calculate a SHA256 hash of the contents of the block
+  return Crypto.CryptoJS.SHA256(getTextVote(block));  //getText metodu blockchain.pug dosyasında bulunan bir metottur.
+}
+
+function sha256Single(text) {
+  // calculate a SHA256 hash of the contents of the block
+  return Crypto.CryptoJS.SHA256(text);  //getText metodu blockchain.pug dosyasında bulunan bir metottur.
+}
+
+function updateHashVote(words) {
+  //blocks[index+1].hash = sha256Vote(blocks[index+1]);
+
+  var myHash = words.map(function(word) {
+    if (word < 0) {
+        word = 0xFFFFFFFF ^ Math.abs(word) + 1;
+    }
+    return ('00000000' + (word >>> 0).toString(16)).slice(-8);
+  }).join('');
+  return myHash;
+}
+
+function updateChainVote(blocks, index) {
+  // i 2, x 3
+  for (var x = blocks[index].id; x <= blocks.length; x++) {
+    if (x > 1) {
+      console.log(x);
+      blocks[x-1].previous = blocks[x-2].hash;
+    }
+    else
+    {
+      blocks[x-1].previous = '0000000000000000000000000000000000000000000000000000000000000000';
+    }
+    var myHash = updateHashVote(sha256Vote(blocks[x-1]).words);
+    blocks[x-1].hash = myHash;
+  }
+}
+
+// Nonce ve ardından hash hesaplama işlemi yapılır
+function mineVote(blocks, index) {
+  for (var x = 0; x <= maximumNonce; x++) {
+    blocks[index].nonce = x;
+
+    var myHash = updateHashVote(sha256Single(blocks[index].data).words);
+    blocks[index].data = myHash;
+
+    var myHash = updateHashVote(sha256Vote(blocks[index]).words);
+    blocks[index].hash = myHash;
+    
+    if (blocks[index].hash.substr(0, patternLen) <= pattern) { //hash değerinin ilk 5 karakteri, 0000f değerinden küçük eşitse
+      updateChainVote(blocks, index);
+      break;
+    }
+  }
+  return blocks;
+}
+
+
+module.exports = {
+  mineVote,
+  updateChainVote,
+  updateHashVote,
+  sha256Vote,
+  getTextVote
+};

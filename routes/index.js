@@ -1,13 +1,16 @@
-var express = require('express');
-var router = express.Router();
-var async = require('async');
+const express = require('express');
+const router = express.Router();
 
-router.get('/', function(req, res, next) {
-  res.render('index');
-});
+const indexController = require('../controllers/index');
 
-router.get('/:page', function(req, res, next) {
-    res.render(req.params.page, {page: req.params.page});
-});
+router.get('/', indexController.getIndex);
 
+router.get('/add-block', indexController.getAddBlock);
+router.post('/add-block', indexController.postAddBlock);
+router.get('/vote', indexController.getVote);
+router.post('/vote', indexController.postVote);
+router.get('/votetest', indexController.getVoteTest);
+router.get('/login', indexController.getLogin);
+router.post('/login', indexController.postLogin);
+router.get('/quit', indexController.getQuit);
 module.exports = router;

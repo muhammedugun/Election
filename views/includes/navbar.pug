@@ -1,0 +1,19 @@
+nav.navbar.navbar-expand-lg.navbar-dark.bg-primary.fixed-top
+    .container
+        a(href="/").navbar-brand Seçim Projesi
+        ul.navbar-nav.mr-auto
+
+            li.nav-item
+                a(href="/", class=(path === '/'?'nav-link active':'nav-link')) Anasayfa
+
+            li.nav-item
+                a(href="/vote", class=(path === '/vote'?'nav-link active':'nav-link')) Oy Ver  
+
+            li.nav-item
+                a(href="/blockchain", class=(path === '/blockchain'?'nav-link active':'nav-link')) Blokzincir  
+
+        ul.navbar-nav.ml-auto
+            li.nav-item
+                a.nav-link(href="/login", class=(isLogin === true ? 'd-none' : 'd-block')) Login
+                a.nav-link(href="/quit", class=(isLogin === false ? 'd-none' : 'd-block')) Quit
+                    

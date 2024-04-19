@@ -1,0 +1,26 @@
+extends ./layouts/main-layout.pug
+
+block styles
+    link(rel="stylesheet" href="/css/forms.css")
+
+block content
+    h2 Slider ile Radio Button Örneği
+    form(action="/vote" method="POST")
+        .container.mt-5
+        .row
+            .col-md-6
+            .card
+                .card-body
+                .slide-container
+                    .container.text-center
+                        h4 X partisi
+                        input(type="radio" name="party" value="party" id="party" required)
+            .card
+                .card-body
+                .slide-container
+                    .container.text-center
+                        h4 X partisi
+                        input(type="radio" name="party" value="party" id="party" required)
+        .row
+            input(type="submit" value="Tamam").btn.btn-primary
+
