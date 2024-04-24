@@ -11,30 +11,12 @@ block content
   script.
     $(function() {
       var blocks = !{JSON.stringify(blocks)};
-      blocks.forEach(function(block) {
-      setup(block.id, 1);
+      blocks.forEach(function(block, i) {
+        setup(blocks, i);
       });
     });
 
-    function getText(block, chain) {
-      return $('#block'+block+'chain'+chain+'number').val() +
-             $('#block'+block+'chain'+chain+'nonce').val() +
-             $('#block'+block+'chain'+chain+'data').val() +
-             $('#block'+block+'chain'+chain+'previous').val();
-    }
-
-    function setup(block, chain) {
-      updateHash(block, chain); //HASH BURADA HESAPLANIYOR
-      $('#block'+block+'chain'+chain+'number').bind('input propertychange', function() { updateChain(block, chain); }); // TÜM ZİNCİRİ GÜNCELLEME
-      $('#block'+block+'chain'+chain+'nonce').bind('input propertychange', function() { updateChain(block, chain); });
-      $('#block'+block+'chain'+chain+'data').bind('input propertychange', function() { updateChain(block, chain); });
-      $('#block'+block+'chain'+chain+'mineButton').click(function(e) {
-          e.preventDefault();
-          var l = Ladda.create(this);
-          l.start();
-          setTimeout(function() {
-              mine(block, chain, true); // MİNE İŞLEMİ
-              l.stop();
-            }, 250); // give UI time to update
-        });
+    function setup(blocks, index) {
+      //updateHash(block, chain); //HASH BURADA HESAPLANIYOR
+      updateState(blocks, index);
     }

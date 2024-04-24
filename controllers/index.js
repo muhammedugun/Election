@@ -82,7 +82,7 @@ exports.postVote = (req, res, next) => {
         Block.getAll()
         .then(blocks => {
             //var newBlocks = JSON.stringify(blocks[0]);
-            var newBlocks2 = Blockhain.mineVote(blocks[0], blocks[0].length-1);
+            var newBlocks2 = Blockhain.mine(blocks[0], blocks[0].length-1);
             Block.UpdateAll(newBlocks2);
         })
         .catch((err) => {

@@ -13,11 +13,6 @@
       .col-sm-10
          input.form-control(id='block'+block.id+'chain'+1+'nonce', type='text', value=block.nonce, disabled)
 
-    .form-group
-      label.col-sm-2.control-label(for='block'+block.id+'chain'+1+'data') Data
-      .col-sm-10
-        input.form-control(id='block'+block.id+'chain'+1+'data', type='text', value=block.data, disabled)
-
     #state.form-group
       label.col-sm-2.control-label(for='block'+block.id+'chain'+1+'previous') Prev
       .col-sm-10
@@ -26,11 +21,11 @@
     #state.form-group
       label.col-sm-2.control-label(for='block'+block.id+'chain'+1+'hash') Hash
       .col-sm-10
-        input.form-control(id='block'+block.id+'chain'+1+'hash', type='text', disabled)
+        input.form-control(id='block'+block.id+'chain'+1+'hash', type='text', value=block.hash, disabled)
 
     .form-group
-      .col-sm-2
-        i.icon-spinner.icon-spin.icon-large
+      label.col-sm-2.control-label(for='block'+block.id+'chain'+1+'data') Data
       .col-sm-10
-        button.btn.btn-primary.ladda-button(id='block'+block.id+'chain'+1+'mineButton', data-style='expand-right')
-          span.ladda-label Mine
+        input.form-control(id='block'+block.id+'chain'+1+'data', type='text', value=block.data, disabled)
+
+    
