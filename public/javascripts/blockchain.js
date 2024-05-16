@@ -1,6 +1,5 @@
 const Crypto = require('./lib/sha256');
 
-
 /////////////////////////
 // global variable setup
 /////////////////////////
@@ -36,28 +35,29 @@ else if (difficultyMinor <= 7) { maximumNonce *= 2;  } // 0111 require 1 more 0 
 // else don't bother increasing maximumNonce, it already started with 8x padding
 
 
-
-
-
 function getText(block) {
   return block.id + block.nonce + block.previous + block.tc + block.vote + block.data;
 }
 
 
 function sha256(block) {
-  return Crypto.CryptoJS.SHA256(getText(block));  //getText metodu blockchain.pug dosyasında bulunan bir metottur.
+  return Crypto.CryptoJS.SHA256(getText(block));  
 }
 
 function sha256Single(text) {
-  return Crypto.CryptoJS.SHA256(text);  //getText metodu blockchain.pug dosyasında bulunan bir metottur.
+  return Crypto.CryptoJS.SHA256(text);
 }
 
+// gönderilen bloğun hash değeri patterni sağlayıp sağlamadığına göre bloğu kırmızı ya da yeşil olarak renklendirir
 function updateState(blocks, index) {
   var pattern = 0x0000f;
-  if (blocks[index].hash.substr(0, 5) <= pattern) {
+  var hashValue = parseInt(blocks[index].hash.substr(0, 5), 16); // Hexadecimal olarak parse ediyoruz
+  console.log(hashValue);
+  if (hashValue <= pattern) {
       $('#block'+blocks[index].id+'chain'+1+'well').removeClass('well-error').addClass('well-success');
   }
   else {
+   console.log("else");
       $('#block'+blocks[index].id+'chain'+1+'well').removeClass('well-success').addClass('well-error');
   }
 }
@@ -75,19 +75,22 @@ function updateHash(words) {
 }
 
 function updateChain(blocks, index) {
-  // i 2, x 3
-  for (var x = blocks[index].id; x <= blocks.length; x++) {
-    if (x > 1) {
-      console.log(x);
-      blocks[x-1].previous = blocks[x-2].hash;
-    }
-    else
+
+  for ( ; index < blocks.length; index++) {
+
+    if(index==0)
     {
-      blocks[x-1].previous = '0000000000000000000000000000000000000000000000000000000000000000';
+      blocks[index].previous = '0000000000000000000000000000000000000000000000000000000000000000';
     }
-    var myHash = updateHash(sha256(blocks[x-1]).words);
-    blocks[x-1].hash = myHash;
+    else{
+      blocks[index].previous = blocks[index-1].hash;
+    }
+
+  
+    var myHash = updateHash(sha256(blocks[index]).words);
+    blocks[index].hash = myHash;
   }
+  return blocks;
 }
 
 // Nonce ve ardından hash hesaplama işlemi yapılır
@@ -118,8 +121,6 @@ function mine(blocks, index) {
   }
   return blocks;
 }
-
-
 
 
 module.exports = {

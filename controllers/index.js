@@ -13,6 +13,10 @@ exports.getIndex = (req, res, next) => {
 
     Block.getAll()
         .then(blocks => {
+
+            var newBlocks = Blockhain.updateChain(blocks[0], 0);
+            Block.UpdateAll(newBlocks);
+
             res.render('blockchain', {
                 title: 'Blockhain',
                 path:'/',
@@ -78,7 +82,6 @@ exports.postVote = (req, res, next) => {
         return block.saveBlock();
     }).then(() => {
 
-
         Block.getAll()
         .then(blocks => {
             //var newBlocks = JSON.stringify(blocks[0]);
@@ -89,17 +92,10 @@ exports.postVote = (req, res, next) => {
             console.log(err);
         });
 
-
         res.redirect('/vote');
     }).catch((err) => {
         console.log(err);
     });
-
-    
-
-
-
-    
 }
 
 exports.getVoteTest = (req, res, next) => {
