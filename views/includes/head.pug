@@ -1,5 +1,4 @@
 head
-   
         meta(charset="utf-8")
         meta(http-equiv='X-UA-Compatible', content='IE=edge')
         meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
@@ -24,5 +23,95 @@ head
         script(src='/javascripts/lib/sha256.js')
         script(src='/javascripts/blockchain.js')
 
-        
         title #{title}
+
+        style.
+               body {
+                font-family: Arial, sans-serif;
+                background-color: #f8f8f8;
+                margin: 0;
+                padding: 0;
+                }
+                .container {
+                width: 80%;
+                margin: 0 auto;
+                background-color: #fff;
+                padding: 20px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                }
+                .header {
+                background-color: #00bcd4;
+                color: #fff;
+                padding: 20px;
+                text-align: center;
+                font-size: 24px;
+                }
+                .nav {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+                }
+                .nav .auth {
+                display: flex;
+                gap: 10px;
+                }
+                .nav .menu {
+                display: flex;
+                gap: 20px;
+                }
+                .nav .menu a {
+                text-decoration: none;
+                color: #00bcd4;
+                padding: 10px 20px;
+                border: 1px solid #00bcd4;
+                border-radius: 4px;
+                }
+                .nav .menu a.active {
+                background-color: #00bcd4;
+                color: #fff;
+                }
+                .parties {
+                display: flex;
+                justify-content: space-evenly;
+                gap: 100px;
+                }
+                .party {
+                width: 30%;
+                padding: 20px;
+                text-align: center;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                position: relative;
+                transition: border 0.3s ease;
+                }
+                .party:before {
+                content: '';
+                background-size: cover;
+                opacity: 0.1;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 0;
+                }
+                .party-x:before {
+                background-image: url('https://upload.wikimedia.org/wikipedia/tr/d/d5/Adalet_ve_Kalk%C4%B1nma_Partisi_logo.png');
+                }
+                .party-y:before {
+                background-image: url('https://images.seeklogo.com/logo-png/52/1/cumhuriyet-halk-partisi-chp-yeni-2024-logo-png_seeklogo-520935.png?v=638436914850000000'); 
+                }
+                .party-z:before {
+                background-image: url('https://upload.wikimedia.org/wikipedia/tr/d/d5/Adalet_ve_Kalk%C4%B1nma_Partisi_logo.png');
+                }
+                .party .content {
+                position: relative;
+                z-index: 1;
+                }
+                .party .votes {
+                margin-top: 300px;
+                }
+                .party.selected {
+                border: 3px solid blue;
+                }

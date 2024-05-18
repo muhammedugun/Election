@@ -5,60 +5,19 @@ const Blockhain = require('../public/javascripts/blockchain');
 
 let currentUser = null;
 
-exports.getIndex = (req, res, next) => {
+exports.getHome = (req, res, next) => {
     if(currentUser!=null)
         console.log("index: " + currentUser.name);
     else
     console.log("currentuser is null");
 
-    Block.getAll()
-        .then(blocks => {
-
-            var newBlocks = Blockhain.updateChain(blocks[0], 0);
-            Block.UpdateAll(newBlocks);
-
-            res.render('blockchain', {
-                title: 'Blockhain',
-                path:'/',
-                isLogin: false,
-                blocks: blocks[0]
-            });
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+    res.render('home', {
+        title: 'Home',
+        path:'/home',
+        isLogin: true,
+    }); 
 }
 
-
-exports.getAddBlock = (req, res, next) => {
-    Block.getAll()
-        .then(blocks => {
-            res.render('add-block', {
-                title: 'AddBlock',
-                blocks: blocks[0]
-            });
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-
-}
-
-
-exports.postAddBlock = (req, res, next) => {
-    const block = new Block();
-
-    block.nonce = req.body.nonce;
-    block.previous = req.body.previous;
-
-    block.saveBlock()
-        .then(() => {
-            res.redirect('/');
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-}
 
 exports.getVote = (req, res, next) => {
     if(currentUser!=null)
@@ -73,9 +32,23 @@ console.log("currentuser is null");
     }); 
 }
 
+exports.getNewVote = (req, res, next) => {
+    if(currentUser!=null)
+    console.log("vote: " + currentUser.name);
+else
+console.log("currentuser is null");
+
+    res.render('newVote', {
+        title: 'Vote',
+        path:'/vote',
+        isLogin: true,
+    }); 
+}
+
+
 exports.postVote = (req, res, next) => {
 
-    const block = new Block(currentUser.tc, req.body.vote);
+    const block = new Block(req.body.vote);
 
     block.countCompleted().then(() => {
         // Burası Block.count() işlemi tamamlandıktan sonra çalışacak
@@ -96,15 +69,6 @@ exports.postVote = (req, res, next) => {
     }).catch((err) => {
         console.log(err);
     });
-}
-
-exports.getVoteTest = (req, res, next) => {
-
-    res.render('vote-test', {
-        title: 'VoteTest',
-        path:'/votetest',
-        isLogin: true,
-    });      
 }
 
 exports.getLogin = (req, res, next) => {
@@ -144,6 +108,30 @@ exports.postLogin = (req, res, next) => {
             console.log(err);
         });
 
+}
+
+exports.getBlockchain = (req, res, next) => {
+    if(currentUser!=null)
+        console.log("index: " + currentUser.name);
+    else
+    console.log("currentuser is null");
+
+    Block.getAll()
+        .then(blocks => {
+
+            var newBlocks = Blockhain.updateChain(blocks[0], 0);
+            Block.UpdateAll(newBlocks);
+
+            res.render('blockchain', {
+                title: 'Blockhain',
+                path:'/',
+                isLogin: false,
+                blocks: blocks[0]
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 }
 
 

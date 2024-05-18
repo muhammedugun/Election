@@ -2,13 +2,11 @@ const connection = require('../utility/database');
 
 module.exports = class Block {
 
-    constructor(tc, vote) {
+    constructor(vote) {
         this.nonce = 0;
         this.previous = "0";
         this.hash = "0";
-        this.tc = tc;
         this.vote = vote;
-        this.data = tc + vote;
         this.id = null; // id'yi burada tanımlıyoruz, ancak henüz değeri yok
 
         this._countPromise = new Promise((resolve, reject) => {
@@ -29,7 +27,7 @@ module.exports = class Block {
     }
     
     saveBlock() {
-        return connection.execute('INSERT INTO blocks (id, nonce, previous, hash, tc, vote, data) VALUES (?, ?, ?, ?, ?, ?, ?)', [this.id, this.nonce, this.previous, this.hash, this.tc, this.vote, this.data]);
+        return connection.execute('INSERT INTO blocks (id, nonce, previous, hash, vote) VALUES (?, ?, ?, ?, ?)', [this.id, this.nonce, this.previous, this.hash, this.vote]);
     }
 
     static getAll() {
@@ -45,7 +43,7 @@ module.exports = class Block {
     }
 
     static Update(block) {
-        return connection.execute('UPDATE blocks SET blocks.nonce=?,blocks.previous=?,blocks.hash=?,blocks.tc=?,blocks.vote=?, blocks.data=? WHERE blocks.id=?', [block.nonce, block.previous, block.hash, block.tc, block.vote, block.data, block.id]);
+        return connection.execute('UPDATE blocks SET blocks.nonce=?,blocks.previous=?,blocks.hash=?,blocks.vote=? WHERE blocks.id=?', [block.nonce, block.previous, block.hash, block.vote, block.id]);
     }
 
     static UpdateAll(blocks) {

@@ -36,9 +36,8 @@ else if (difficultyMinor <= 7) { maximumNonce *= 2;  } // 0111 require 1 more 0 
 
 
 function getText(block) {
-  return block.id + block.nonce + block.previous + block.tc + block.vote + block.data;
+  return block.id + block.nonce + block.previous + block.vote;
 }
-
 
 function sha256(block) {
   return Crypto.CryptoJS.SHA256(getText(block));  
@@ -104,9 +103,6 @@ function mine(blocks, index) {
   {
     blocks[index].previous = blocks[index-1].hash;
   }
-  // data hashi hesaplanıyor
-  var myHash = updateHash(sha256Single(blocks[index].data).words);
-  blocks[index].data = myHash;
 
   for (var x = 0; x <= maximumNonce; x++) {
     blocks[index].nonce = x;

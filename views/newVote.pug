@@ -1,0 +1,39 @@
+extends ./layouts/main-layout.pug
+
+block content
+  .parties
+    .party.party-x#party-x
+      .content
+        h2 X Partisi
+        button.btn.btn-primary(data-party="party-x") Seç
+    .party.party-y#party-y
+      .content
+        h2 Y Partisi
+        button.btn.btn-primary(data-party="party-y") Seç
+    .party.party-z#party-z
+      .content
+        h2 Z Partisi
+        button.btn.btn-primary(data-party="party-z") Seç
+  .text-center.mt-4
+    button.btn.btn-success Tamam
+
+block script
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      const buttons = document.querySelectorAll('button.btn.btn-primary');
+      buttons.forEach(button => {
+        button.addEventListener('click', function() {
+          // Remove the highlighted class from all parties
+          document.querySelectorAll('.party').forEach(party => {
+            party.classList.remove('selected');
+          });
+
+          // Get the corresponding party element and add the highlighted class
+          const partyId = this.getAttribute('data-party');
+          const selectedParty = document.getElementById(partyId);
+          if (selectedParty) {
+            selectedParty.classList.add('selected');
+          }
+        });
+      });
+    });
