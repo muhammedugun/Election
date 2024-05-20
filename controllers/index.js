@@ -1,73 +1,111 @@
 const Block = require('../models/block');
 const User = require('../models/user');
+const Party = require('../models/party');
 const Blockhain = require('../public/javascripts/blockchain');
 
 
 let currentUser = null;
+let isLogin=false;
 
-exports.getHome = (req, res, next) => {
-    if(currentUser!=null)
+exports.getHome = async (req, res, next) => {
+
+    if(currentUser != null) {
         console.log("index: " + currentUser.name);
-    else
-    console.log("currentuser is null");
+    } else {
+        console.log("currentuser is null");
+    }
 
-    res.render('home', {
-        title: 'Home',
-        path:'/home',
-        isLogin: true,
-    }); 
-}
+    try {
+        const [partyResults] = await Party.getAll();
+        const parties = partyResults;
+        
+        const voteCounts = {};
+
+        for (const party of parties) {
+            const [voteResult] = await Block.getVoteCount(party.id);
+            voteCounts[party.id] = voteResult[0].count;
+        }
+
+        if(currentUser!=null)
+        {
+            res.render('home', {
+                title: 'Home',
+                path: '/home',
+                isLogin: true,
+                name: currentUser.name,
+                surname: currentUser.surname,
+                parties: parties,
+                voteCounts: voteCounts
+            });
+        }
+        else
+        {
+            res.render('home', {
+                title: 'Home',
+                path: '/home',
+                isLogin: false,
+                parties: parties,
+                voteCounts: voteCounts
+            });
+        }
+
+        
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
+    }
+};
 
 
 exports.getVote = (req, res, next) => {
-    if(currentUser!=null)
-    console.log("vote: " + currentUser.name);
-else
-console.log("currentuser is null");
+    if(currentUser != null) {
+        console.log("index: " + currentUser.name);
+        isLogin=true;
+    } else {
+        console.log("currentuser is null");
+        isLogin=false;
+    }
 
-    res.render('vote', {
-        title: 'Vote',
-        path:'/vote',
-        isLogin: true,
-    }); 
-}
+    Party.getAll()
+        .then(results => {
 
-exports.getNewVote = (req, res, next) => {
-    if(currentUser!=null)
-    console.log("vote: " + currentUser.name);
-else
-console.log("currentuser is null");
-
-    res.render('newVote', {
-        title: 'Vote',
-        path:'/vote',
-        isLogin: true,
-    }); 
+            res.render('vote', {
+                title: 'Vote',
+                path:'/vote',
+                isLogin: isLogin,
+                parties: results[0]
+            }); 
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 }
 
 
 exports.postVote = (req, res, next) => {
 
-    const block = new Block(req.body.vote);
+    const partyId = req.body.partyId;
+
+    const block = new Block(partyId);
 
     block.countCompleted().then(() => {
         // Burası Block.count() işlemi tamamlandıktan sonra çalışacak
         return block.saveBlock();
-    }).then(() => {
+            }).then(() => {
 
-        Block.getAll()
-        .then(blocks => {
-            //var newBlocks = JSON.stringify(blocks[0]);
-            var newBlocks2 = Blockhain.mine(blocks[0], blocks[0].length-1);
-            Block.UpdateAll(newBlocks2);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-
-        res.redirect('/vote');
-    }).catch((err) => {
-        console.log(err);
+                Block.getAll()
+                .then(blocks => {
+                    //var newBlocks = JSON.stringify(blocks[0]);
+                    var newBlocks2 = Blockhain.mine(blocks[0], blocks[0].length-1);
+                    Block.UpdateAll(newBlocks2);
+                    res.redirect('/vote');
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+                
+            }).catch((err) => {
+                console.log(err);
     });
 }
 
@@ -93,13 +131,15 @@ exports.postLogin = (req, res, next) => {
             {
                 currentUser = lastUser;
                 console.log("Succesfull login");
+                res.redirect('/');
             }
             else
             {
                 console.log("Failed login");
+                res.redirect('/login');
             }
 
-            res.redirect('/login');
+            
 
         })
         .catch((err) => {
@@ -135,12 +175,8 @@ exports.getBlockchain = (req, res, next) => {
 }
 
 
-exports.getQuit = (req, res, next) => {
+exports.getLogout = (req, res, next) => {
     currentUser = null;
-    res.render('login', {
-        title: 'Quited',
-        path:'/login',
-        isLogin: false,
-    }); 
     
+    getHome(req, res, next);
 }

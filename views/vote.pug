@@ -1,16 +1,70 @@
 extends ./layouts/main-layout.pug
 
 block styles
-    link(rel="stylesheet" href="/css/forms.css")
+  style
+    each party in parties
+      | .party-#{party.id}::before {
+      |   content: '';
+      |   background-image: url('#{party.imageURL}');
+      |   background-size: cover;
+      |   opacity: 0.1;
+      |   position: absolute;
+      |   top: 0;
+      |   left: 0;
+      |   right: 0;
+      |   bottom: 0;
+      |   z-index: 0;
+      | }
+      | .party {
+      |   position: relative;
+      | }
+      | .party .content {
+      |  position: relative;
+      |   z-index: 1;
+      | }
+      | .party.selected {
+      |  border: 3px solid blue;
+      | }
+
 
 block content
-    form(action="/vote" method="POST")
-        .form-group.row
-            label(for="vote").col-sm-2.col-form-label Vote
-            .col-sm-10
-                input.form-control#price(type="number" name="vote")
+  form(action="/vote" method="POST")
+    .parties
+      each party in parties
+        .party(id=`party-${party.id}` class=`party-${party.id}`)
+          .content
+            input(type="radio" name="partyId" value=`${party.id}` id=`party-${party.id}`)
+            label(for=`party-${party.id}`)
+              h2 #{party.name}
 
-        .form-group.row
-            .col-sm-10.offset-sm-2
-                input(type="submit" value="Save Block").btn.btn-primary   
-           
+    .text-center.mt-4
+      input(type="submit" value="Tamam").btn.btn-primary
+
+block script
+  script.
+    document.addEventListener('DOMContentLoaded', function() {
+      const radios = document.querySelectorAll('input[name="partyId"]');
+      radios.forEach(radio => {
+        radio.addEventListener('change', function() {
+          // Remove the selected class from all parties
+          document.querySelectorAll('.party').forEach(party => {
+            party.classList.remove('selected');
+          });
+
+          // Add the selected class to the selected party
+          const selectedParty = document.getElementById(this.id);
+          if (selectedParty) {
+            selectedParty.classList.add('selected');
+          }
+        });
+      });
+
+      const voteForm = document.querySelector('form[action="/vote"]');
+      voteForm.addEventListener('submit', function(event) {
+        const selectedPartyId = document.querySelector('input[name="partyId"]:checked');
+        if (!selectedPartyId) {
+          event.preventDefault();
+          alert('Lütfen bir parti seçin.');
+        }
+      });
+    });

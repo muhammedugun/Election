@@ -1,15 +1,25 @@
 extends ./layouts/main-layout.pug
+
+block styles
+  style
+    each party in parties
+      | .party-#{party.id}::before {
+      |   content: '';
+      |   background-image: url('#{party.imageURL}');
+      |   background-size: cover;
+      |   opacity: 0.1;
+      |   position: absolute;
+      |   top: 0;
+      |   left: 0;
+      |   right: 0;
+      |   bottom: 0;
+      |   z-index: 0;
+      | }
+
 block content
-      .parties
-        .party.party-x
-          .content
-            h2 X Partisi
-            .votes Oy Sayısı: 10000
-        .party.party-y
-          .content
-            h2 Y Partisi
-            .votes Oy Sayısı: 20000
-        .party.party-z
-          .content
-            h2 Z Partisi
-            .votes Oy Sayısı: 10000
+  .parties
+    each party in parties
+      .party(class=`party-${party.id}`)
+        .content
+          h2 #{party.name}
+          .votes Oy Sayısı: #{voteCounts[party.id]}

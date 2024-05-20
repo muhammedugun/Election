@@ -2,8 +2,11 @@
       .header #{title}
       .nav
         .auth
-          button Giriş Yap
-          span Vatandaş İsmi
+          if isLogin
+            button(onclick="redirectToLogout()") Çıkış Yap
+            span #{name} #{surname}
+          else
+            button(onclick="redirectToLogin()") Giriş Yap
         .menu
           a(href="/" class="active") Ana Sayfa
           a(href="/vote") Oy Ver

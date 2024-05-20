@@ -1,26 +1,48 @@
-extends ./layouts/main-layout.pug
-
-block styles
-    link(rel="stylesheet" href="/css/forms.css")
-
-block content
-    form(action="/login" method="POST")
-        .form-group.row
-            label(for="tc").col-sm-2.col-form-label TC
-            .col-sm-10
-                input.form-control#name(type="number" name="tc")  
-
-        .form-group.row
-            label(for="name").col-sm-2.col-form-label AD
-            .col-sm-10
-                input.form-control#price(type="text" name="name") 
-
-        .form-group.row
-            label(for="surname").col-sm-2.col-form-label SOYAD
-            .col-sm-10
-                input.form-control#price(type="text" name="surname") 
-
-        .form-group.row
-            .col-sm-10.offset-sm-2
-                input(type="submit" value="Tamam").btn.btn-primary   
-           
+doctype html
+html
+  head
+    title Login Form
+    style.
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .form-container {
+        border: 1px solid #000;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      .form-container div {
+        margin-bottom: 10px;
+      }
+      .form-container label {
+        display: inline-block;
+        width: 50px;
+        text-align: right;
+        margin-right: 10px;
+      }
+      .form-container input {
+        width: 200px;
+        padding: 5px;
+      }
+      .form-container button {
+        display: block;
+        margin: 20px auto 0;
+        padding: 10px 20px;
+      }
+  body
+    .form-container
+      form(action="/login" method="POST")
+        div
+          label(for="tc") TC:
+          input(type="text" id="tc" name="tc")
+        div
+          label(for="ad") AD:
+          input(type="text" id="name" name="name")
+        div
+          label(for="soyad") SOYAD:
+          input(type="text" id="surname" name="surname")
+        button(type="submit") Tamam

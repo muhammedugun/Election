@@ -38,6 +38,10 @@ module.exports = class Block {
         return connection.execute('SELECT COUNT(*) AS total_blocks FROM blocks');
     }
 
+    static getVoteCount(voteValue) {
+        return connection.execute('SELECT COUNT(*) AS count FROM blocks WHERE vote = ?', [voteValue]);
+    }    
+
     static getById(id) {
         return connection.execute('SELECT * FROM blocks WHERE block.id=?', [id]);
     }
