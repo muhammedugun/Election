@@ -26,19 +26,22 @@ block styles
       |  border: 3px solid blue;
       | }
 
-
 block content
-  form(action="/vote" method="POST")
-    .parties
-      each party in parties
-        .party(id=`party-${party.id}` class=`party-${party.id}`)
-          .content
-            input(type="radio" name="partyId" value=`${party.id}` id=`party-${party.id}`)
-            label(for=`party-${party.id}`)
-              h2 #{party.name}
+  if hasVoted
+    .alert.alert-warning
+      | Zaten oy verdiniz. Tekrar oy veremezsiniz.
+  else
+    form(action="/vote" method="POST")
+      .parties
+        each party in parties
+          .party(id=`party-${party.id}` class=`party-${party.id}`)
+            .content
+              input(type="radio" name="partyId" value=`${party.id}` id=`party-${party.id}`)
+              label(for=`party-${party.id}`)
+                h2 #{party.name}
 
-    .text-center.mt-4
-      input(type="submit" value="Tamam").btn.btn-primary
+      .text-center.mt-4
+        input(type="submit" value="Tamam").btn.btn-primary
 
 block script
   script.
