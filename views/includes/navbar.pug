@@ -1,13 +1,13 @@
 .container
-      .header #{title}
-      .nav
-        .auth
-          if isLogin
-            button(onclick="redirectToLogout()") Çıkış Yap
-            span #{name} #{surname}
-          else
-            button(onclick="redirectToLogin()") Giriş Yap
-        .menu
-          a(href="/" class="active") Ana Sayfa
-          a(href="/vote") Oy Ver
-          a(href="/blockchain") Blokzincir
+  .header #{title}
+  .nav
+    .auth
+      if isLogin
+        button(onclick="redirectToLogout()") Çıkış Yap
+        span #{name} #{surname}
+      else
+        button(onclick="redirectToLogin()") Giriş Yap
+    .menu
+      a(href="/" class=(path === '/home' ? 'active' : '')) Ana Sayfa
+      a(href="/vote" class=(path === '/vote' ? 'active' : '')) Oy Ver
+      a(href="/blockchain" class=(path === '/blockchain' ? 'active' : '')) Blokzincir
