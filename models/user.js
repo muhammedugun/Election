@@ -38,6 +38,7 @@ module.exports = class User {
   }
 
   static async updateUserHash(tc, hash, previous, nonce) {
+    console.log("pre: " +previous);
     if (hash.length > 64 || previous.length > 64) {
       throw new Error('Hash or Previous data too long');
     }
@@ -46,21 +47,36 @@ module.exports = class User {
 
   static async hashUser(tc, name, surname, isVote, nonce, previous) {
     const { hash, nonce: newNonce } = await Blockchain.hashUser(tc, name, surname, isVote, nonce, previous);
-    return hash;
+    return { hash, nonce: newNonce };
+  }
+
+  static async hashUserNoPattern(tc, name, surname, isVote, nonce, previous) {
+    const { hash } = await Blockchain.hashUserNoPattern(tc, name, surname, isVote, nonce, previous);
+    return { hash };
   }
 
   static async updateUserChain() {
     const [users] = await this.getAll();
-    let previous = "0000000000000000000000000000000000000000000000000000000000000000";
 
-    for (const user of users) {
-      const nonce = user.nonce;
-      const hash = await this.hashUser(user.tc, user.name, user.surname, user.isVote, nonce, previous);
-      console.log(`Updating user ${user.tc}: hash length ${hash.length}, previous length ${previous.length}`);
-      await this.updateUserHash(user.tc, hash, previous, nonce);
-      previous = hash;
+    for (let i = 0; i < users.length; i++) {
+        const user = users[i];
+        if (user.tc === 1) {
+            user.previous = "0000000000000000000000000000000000000000000000000000000000000000";
+        } else {
+            const previousUser = users[i - 1];
+            if (previousUser) {
+                user.previous = await this.hashUser(previousUser.tc, previousUser.name, previousUser.surname, previousUser.isVote, previousUser.nonce, previousUser.previous);
+            } else {
+                // İlk kullanıcı için varsayılan bir önceki hash değeri
+                user.previous = "0000000000000000000000000000000000000000000000000000000000000000";
+            }
+        }
+        console.log("before user.js -> updateUserChain -> user: " + user.tc + " nonce: " + user.nonce);
+        const hash = await this.hashUser(user.tc, user.name, user.surname, user.isVote, user.nonce, user.previous);
+        console.log("after user.js -> updateUserChain -> user: " + user.tc + " nonce: " + user.nonce);
+        await this.updateUserHash(user.tc, hash, user.previous, user.nonce);
     }
-  }
+}
 
 // Yeni fonksiyon: Kullanıcı hashlerini doğrulama
 static async verifyUserHashes() {
@@ -68,7 +84,13 @@ static async verifyUserHashes() {
     const pattern = '0000f';  // Pattern kontrolü için
     for (const user of users) {
       if (user.hash !== null) {
-        if (user.hash.substr(0, pattern.length) > pattern) {
+        const result = await this.hashUserNoPattern(user.tc, user.name, user.surname, user.isVote, user.nonce, user.previous);
+        console.log("user.js -> verifyUserHashes -> result: " + result);
+        const tempHash = result;  // tempHash'in undefined olup olmadığını kontrol et
+        if (tempHash === undefined) {
+          throw new Error(`Hash computation failed for user ${user.tc}`);
+        }
+        if (tempHash.substr(0, pattern.length) > pattern) {
           return false;  // Eğer hash pattern'e uymuyorsa false döner
         }
       }
