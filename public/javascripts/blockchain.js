@@ -55,9 +55,11 @@ function sha256Single(text) {
 function updateState(blocks, index) {
   var pattern = 0x0000f;
   var hashValue = parseInt(blocks[index].hash.substr(0, 5), 16); // Hexadecimal olarak parse ediyoruz
+  console.log(hashValue);
   if (hashValue <= pattern) {
     $('#block' + blocks[index].id + 'chain' + 1 + 'well').removeClass('well-error').addClass('well-success');
   } else {
+    console.log("else");
     $('#block' + blocks[index].id + 'chain' + 1 + 'well').removeClass('well-success').addClass('well-error');
   }
 }
@@ -109,7 +111,7 @@ function mine(blocks, index) {
 
 // User hash computation with pattern
 async function hashUser(tc, name, surname, isVote, nonce, previous) {
-  const data = tc + name + surname + isVote + previous;
+  const data = tc + name + surname + isVote + nonce + previous;
   let hash = '';
   for (let x = 0; x <= maximumNonce; x++) {
     nonce = x;
@@ -121,21 +123,7 @@ async function hashUser(tc, name, surname, isVote, nonce, previous) {
   if (hash.length > 64) {
     throw new Error('Generated hash is too long');
   }
-  console.log("blockchain.js -> hashUser -> data: " + data+nonce);
-  console.log("blockchain.js -> hashUser -> hash: " + hash);
   return { hash, nonce };
-}
-
-
-// User hash computation with pattern
-async function hashUserNoPattern(tc, name, surname, isVote, nonce, previous) {
-  const data = tc + name + surname + isVote + previous;
-  console.log("blockchain.js -> hashUserNoPattern -> data: " + data+nonce);
-  let hash = sha256Single(data + nonce).toString();
-  if (hash.length > 64) {
-    throw new Error('Generated hash is too long');
-  }
-  return { hash };
 }
 
 module.exports = {
@@ -145,6 +133,5 @@ module.exports = {
   sha256: sha256,
   sha256Single: sha256Single,
   getText: getText,
-  hashUser: hashUser,
-  hashUserNoPattern: hashUserNoPattern
+  hashUser: hashUser
 };

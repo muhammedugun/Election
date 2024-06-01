@@ -15,6 +15,7 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getHome = async (req, res, next) => {
+  console.log(currentUser ? `index: ${currentUser.name}` : 'currentUser is null');
 
   try {
     const [partyResults] = await Party.getAll();
@@ -42,6 +43,7 @@ exports.getHome = async (req, res, next) => {
 };
 
 exports.getVote = async (req, res, next) => {
+  console.log(currentUser ? `index: ${currentUser.name}` : 'currentUser is null');
 
   if (!currentUser) {
     res.redirect('/login');
@@ -65,14 +67,12 @@ exports.getVote = async (req, res, next) => {
 };
 
 exports.postVote = async (req, res, next) => {
-    console.log("index.js - > postVote()");
   if (currentUser == null) {
     res.redirect('/login');
   } else if (currentUser.isVote) {
     res.redirect('/home');
   } else {
     // Kullanıcı hashlerini doğrula
-    console.log("index.js - > postVote -> verifyUserHashes");
     const userHashesValid = await User.verifyUserHashes();
     if (!userHashesValid) {
       res.send('Users tablosundaki hashler bozulduğu için oy veremezsiniz!');
@@ -91,7 +91,7 @@ exports.postVote = async (req, res, next) => {
 
       // Kullanıcının oy verdiğini güncelle
       await User.updateIsVote(currentUser.tc, 1);
-      currentUser.isVote = 1;
+      currentUser.isVote = true;
 
       // Kullanıcı zincirini güncelle
       const lastUser = await User.getLastUser();
@@ -101,13 +101,10 @@ exports.postVote = async (req, res, next) => {
       } else {
         previousHash = lastUser.hash;
       }
-      console.log("index.js - > postVote -> Blockchain.hashUser");
       const { hash, nonce } = await Blockchain.hashUser(currentUser.tc, currentUser.name, currentUser.surname, currentUser.isVote, currentUser.nonce, previousHash);
       currentUser.nonce = nonce;
-      console.log("index.js - > postVote -> updateUserHash");
       await User.updateUserHash(currentUser.tc, hash, previousHash, nonce);
 
-      console.log("index.js - > postVote -> updateUserChain");
       // Tüm kullanıcı zincirini güncelle
       await User.updateUserChain();
 
@@ -147,6 +144,8 @@ exports.postLogin = async (req, res, next) => {
 };
 
 exports.getBlockchain = async (req, res, next) => {
+  console.log(currentUser ? `index: ${currentUser.name}` : 'currentUser is null');
+
   try {
     const [blocks] = await Block.getAll();
     const updatedBlocks = Blockchain.updateChain(blocks, 0);
